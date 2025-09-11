@@ -1,0 +1,30 @@
+{
+  "name": "blockchain-project-funding",
+  "version": "1.0.0",
+  "description": "Blockchain-based project funding and budget tracking system",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
+    "node": "npx hardhat node",
+    "demo": "npx hardhat run scripts/demo.js --network hardhat",
+    "test-connection": "npx hardhat run scripts/test-connection.js --network hardhat",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "keywords": ["blockchain", "ethereum", "solidity", "project-funding", "dapp"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0",
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "ethers": "^6.8.0"
+  }
+}
