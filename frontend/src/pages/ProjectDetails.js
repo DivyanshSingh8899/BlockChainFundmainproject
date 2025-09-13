@@ -200,7 +200,7 @@ const ProjectDetails = () => {
     );
   }
 
-  const progressPercentage = (parseInt(project.currentMilestone) / project.milestones.length) * 100;
+  const progressPercentage = project.milestones?.length ? (parseInt(project.currentMilestone) / project.milestones.length) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -277,7 +277,7 @@ const ProjectDetails = () => {
                 
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900">
-                    {project.milestones.length}
+                    {project.milestones?.length || 0}
                   </div>
                   <div className="text-sm text-gray-500">Total Milestones</div>
                 </div>

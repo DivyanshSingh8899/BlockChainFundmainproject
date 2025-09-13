@@ -6,12 +6,10 @@ import {
   Filter, 
   Plus, 
   Eye, 
-  Calendar, 
   DollarSign,
   Users,
   Clock,
-  CheckCircle,
-  XCircle
+  CheckCircle
 } from 'lucide-react';
 
 const Projects = () => {
@@ -28,36 +26,8 @@ const Projects = () => {
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        // Use demo account if no wallet connected
-        const demoAccount = account || '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
-        
-        // Call backend API to get all projects
-        const [userProjectsResponse, sponsoredProjectsResponse] = await Promise.all([
-          fetch(`http://localhost:3001/api/projects?user=${demoAccount}`),
-          fetch(`http://localhost:3001/api/projects?sponsor=${demoAccount}`)
-        ]);
-
-        const userProjectsData = await userProjectsResponse.json();
-        const sponsoredProjectsData = await sponsoredProjectsResponse.json();
-
-        // Combine all projects and remove duplicates
-        const allProjects = [
-          ...(userProjectsData.projects || []),
-          ...(sponsoredProjectsData.projects || [])
-        ];
-
-        // Remove duplicates based on project ID
-        const uniqueProjects = allProjects.filter((project, index, self) => 
-          index === self.findIndex(p => p.id === project.id)
-        );
-        
-        setProjects(uniqueProjects);
-        setFilteredProjects(uniqueProjects);
-        
-      } catch (error) {
-        console.error('Error loading projects:', error);
-        // Set fallback data
-        const fallbackProjects = [
+        // Use mock data since backend is not available
+        const mockProjects = [
           {
             id: '1',
             name: 'Blockchain E-Learning Platform',
@@ -69,6 +39,13 @@ const Projects = () => {
             totalReleased: '8.5',
             currentMilestone: '4',
             active: true,
+            milestones: [
+              { id: 1, description: 'Project Setup', amount: '2.0', dueDate: '2024-01-15' },
+              { id: 2, description: 'Smart Contract Development', amount: '5.0', dueDate: '2024-02-15' },
+              { id: 3, description: 'Frontend Development', amount: '4.0', dueDate: '2024-03-15' },
+              { id: 4, description: 'Testing & Deployment', amount: '3.0', dueDate: '2024-04-15' },
+              { id: 5, description: 'Documentation', amount: '1.5', dueDate: '2024-05-15' }
+            ],
             createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
           },
           {
@@ -82,11 +59,62 @@ const Projects = () => {
             totalReleased: '0.0',
             currentMilestone: '0',
             active: true,
+            milestones: [
+              { id: 1, description: 'Research & Planning', amount: '3.0', dueDate: '2024-01-20' },
+              { id: 2, description: 'Smart Contract Architecture', amount: '8.0', dueDate: '2024-02-20' },
+              { id: 3, description: 'Frontend Interface', amount: '7.0', dueDate: '2024-03-20' },
+              { id: 4, description: 'Analytics Engine', amount: '5.0', dueDate: '2024-04-20' },
+              { id: 5, description: 'Security Audit', amount: '2.0', dueDate: '2024-05-20' }
+            ],
             createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: '3',
+            name: 'NFT Marketplace for Artists',
+            description: 'A decentralized marketplace for digital artists to mint, sell, and trade their artwork as NFTs with royalty mechanisms',
+            creator: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+            sponsor: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+            totalBudget: '12.0',
+            totalDeposited: '12.0',
+            totalReleased: '6.0',
+            currentMilestone: '2',
+            active: true,
+            milestones: [
+              { id: 1, description: 'NFT Contract Development', amount: '4.0', dueDate: '2024-01-10' },
+              { id: 2, description: 'Marketplace Frontend', amount: '4.0', dueDate: '2024-02-10' },
+              { id: 3, description: 'Artist Dashboard', amount: '2.0', dueDate: '2024-03-10' },
+              { id: 4, description: 'Payment Integration', amount: '2.0', dueDate: '2024-04-10' }
+            ],
+            createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: '4',
+            name: 'DAO Governance Platform',
+            description: 'A decentralized autonomous organization platform for community governance with voting mechanisms and proposal management',
+            creator: '0x90F79bf6EB2c4f870365E785982E1f101E93b906',
+            sponsor: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+            totalBudget: '18.5',
+            totalDeposited: '18.5',
+            totalReleased: '18.5',
+            currentMilestone: '4',
+            active: false,
+            milestones: [
+              { id: 1, description: 'Governance Contract', amount: '6.0', dueDate: '2023-12-01' },
+              { id: 2, description: 'Voting Interface', amount: '5.0', dueDate: '2023-12-15' },
+              { id: 3, description: 'Proposal System', amount: '4.0', dueDate: '2024-01-01' },
+              { id: 4, description: 'Final Testing', amount: '3.5', dueDate: '2024-01-15' }
+            ],
+            createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString()
           }
         ];
-        setProjects(fallbackProjects);
-        setFilteredProjects(fallbackProjects);
+        
+        setProjects(mockProjects);
+        setFilteredProjects(mockProjects);
+        
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        setProjects([]);
+        setFilteredProjects([]);
       } finally {
         setIsLoading(false);
       }
@@ -138,6 +166,7 @@ const Projects = () => {
   };
 
   const getProgressPercentage = (project) => {
+    if (!project.milestones || project.milestones.length === 0) return 0;
     return (parseInt(project.currentMilestone) / project.milestones.length) * 100;
   };
 
@@ -178,7 +207,7 @@ const Projects = () => {
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Progress:</span>
           <span className="font-medium">
-            {project.currentMilestone}/{project.milestones.length} milestones
+            {project.currentMilestone}/{project.milestones?.length || 0} milestones
           </span>
         </div>
       </div>
@@ -209,7 +238,6 @@ const Projects = () => {
     const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
     const startIndex = (currentPage - 1) * projectsPerPage;
     const endIndex = startIndex + projectsPerPage;
-    const currentProjects = filteredProjects.slice(startIndex, endIndex);
 
     if (totalPages <= 1) return null;
 

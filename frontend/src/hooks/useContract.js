@@ -14,7 +14,7 @@ export const useContract = () => {
 };
 
 export const ContractProvider = ({ children }) => {
-  const { provider, signer, isConnected } = useWallet();
+  const { provider, signer } = useWallet();
   const [contract, setContract] = useState(null);
   const [contractAddress, setContractAddress] = useState(null);
   const [contractABI, setContractABI] = useState(null);

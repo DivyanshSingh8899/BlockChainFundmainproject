@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const projectRoutes = require('./routes/projects');
 const blockchainService = require('./services/blockchainService');
+const databaseService = require('./services/databaseService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,7 +19,10 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  message: 'Too many requests from this IP, please try again later.',
+  trustProxy: false, // Explicitly set trust proxy to false
+  standardHeaders: true,
+  legacyHeaders: false
 });
 app.use(limiter);
 
@@ -48,6 +52,88 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/projects', projectRoutes);
+
+// Database API endpoints
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await databaseService.getAllUsers();
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/users', async (req, res) => {
+  try {
+    const { full_name, email, wallet_address } = req.body;
+    
+    if (!full_name || !email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Full name and email are required'
+      });
+    }
+    
+    const user = await databaseService.createUser({
+      full_name,
+      email,
+      wallet_address
+    });
+    
+    res.status(201).json({ success: true, user });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/users/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
+    const user = await databaseService.getUserByEmail(email);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+    
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.put('/api/users/:email/wallet', async (req, res) => {
+  try {
+    const { email } = req.params;
+    const { wallet_address } = req.body;
+    
+    if (!wallet_address) {
+      return res.status(400).json({
+        success: false,
+        error: 'Wallet address is required'
+      });
+    }
+    
+    const user = await databaseService.updateUserWallet(email, wallet_address);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+    
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error('Error updating user wallet:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 // Contract info endpoint
 app.get('/api/contract-info', async (req, res) => {
@@ -108,6 +194,15 @@ app.use('*', (req, res) => {
 async function startServer() {
   try {
     console.log('🚀 Starting Blockchain Project Funding API...');
+    
+    // Initialize database connection
+    try {
+      await databaseService.initialize();
+      await databaseService.createUsersTable();
+      console.log('✅ Database service initialized');
+    } catch (error) {
+      console.log('⚠️ Database service not available:', error.message);
+    }
     
     // Initialize blockchain connection (optional)
     try {

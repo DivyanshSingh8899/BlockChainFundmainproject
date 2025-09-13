@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuthMock';
 import { useWallet } from '../hooks/useWallet';
 import { 
   Wallet, 
@@ -9,20 +10,28 @@ import {
   FolderOpen, 
   Plus, 
   User,
-  Info
+  Info,
+  LogOut,
+  LogIn,
+  UserCheck
 } from 'lucide-react';
 
 const Navbar = () => {
-  const { account, balance, isConnected, connectWallet, disconnectWallet, isConnecting } = useWallet();
+  const { 
+    isAuthenticated, 
+    userProfile, 
+    signOut 
+  } = useAuth();
+  const { account, connectWallet, disconnectWallet, isConnecting } = useWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: Home },
-    { name: 'Projects', href: '/projects', icon: FolderOpen },
-    { name: 'Create Project', href: '/projects/create', icon: Plus },
-    { name: 'Profile', href: '/profile', icon: User },
-    { name: 'About', href: '/about', icon: Info },
+    { name: 'Dashboard', href: '/dashboard', icon: Home, requireAuth: true },
+    { name: 'Projects', href: '/projects', icon: FolderOpen, requireAuth: true },
+    { name: 'Create Project', href: '/projects/create', icon: Plus, requireAuth: true, requireRole: 'manager' },
+    { name: 'Profile', href: '/profile', icon: User, requireAuth: true },
+    { name: 'About', href: '/about', icon: Info, requireAuth: false },
   ];
 
   const isActive = (path) => {
@@ -37,10 +46,11 @@ const Navbar = () => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const formatBalance = (balance) => {
-    if (!balance) return '0.00';
-    return parseFloat(balance).toFixed(4);
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
   };
+
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -58,53 +68,92 @@ const Navbar = () => {
 
           {/* Desktop navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.href)
-                      ? 'text-primary-600 bg-primary-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
+            {navigation
+              .filter(item => !item.requireAuth || isAuthenticated)
+              .filter(item => !item.requireRole || userProfile?.role === item.requireRole)
+              .map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                      isActive(item.href)
+                        ? 'text-primary-600 bg-primary-50'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
           </div>
 
-          {/* Wallet connection */}
+          {/* Authentication and Wallet */}
           <div className="flex items-center space-x-4">
-            {isConnected ? (
+            {isAuthenticated ? (
               <div className="flex items-center space-x-3">
+                {/* User Info */}
                 <div className="hidden sm:block text-right">
                   <div className="text-sm font-medium text-gray-900">
-                    {formatAddress(account)}
+                    {userProfile?.full_name || userProfile?.email}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {formatBalance(balance)} ETH
+                  <div className="text-xs text-gray-500 capitalize">
+                    {userProfile?.role}
                   </div>
+                  {account && (
+                    <div className="text-xs text-gray-500 font-mono">
+                      {formatAddress(account)}
+                    </div>
+                  )}
                 </div>
+
+                {/* Wallet Connection */}
+                {account ? (
+                  <button
+                    onClick={disconnectWallet}
+                    className="btn-secondary text-sm"
+                  >
+                    Disconnect Wallet
+                  </button>
+                ) : (
+                  <button
+                    onClick={connectWallet}
+                    disabled={isConnecting}
+                    className="btn-primary flex items-center space-x-2 text-sm"
+                  >
+                    <Wallet className="w-4 h-4" />
+                    <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
+                  </button>
+                )}
+
+                {/* Sign Out */}
                 <button
-                  onClick={disconnectWallet}
-                  className="btn-secondary text-sm"
+                  onClick={handleSignOut}
+                  className="btn-secondary text-sm flex items-center space-x-1"
                 >
-                  Disconnect
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
                 </button>
               </div>
             ) : (
-              <button
-                onClick={connectWallet}
-                disabled={isConnecting}
-                className="btn-primary flex items-center space-x-2"
-              >
-                <Wallet className="w-4 h-4" />
-                <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/login"
+                  className="btn-secondary text-sm flex items-center space-x-1"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
+                </Link>
+                <Link
+                  to="/signup"
+                  className="btn-primary text-sm flex items-center space-x-1"
+                >
+                  <UserCheck className="w-4 h-4" />
+                  <span>Sign Up</span>
+                </Link>
+              </div>
             )}
 
             {/* Mobile menu button */}
@@ -125,24 +174,102 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                      isActive(item.href)
-                        ? 'text-primary-600 bg-primary-50'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
+              {navigation
+                .filter(item => !item.requireAuth || isAuthenticated)
+                .filter(item => !item.requireRole || userProfile?.role === item.requireRole)
+                .map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                        isActive(item.href)
+                          ? 'text-primary-600 bg-primary-50'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              
+              {/* Mobile auth and wallet buttons */}
+              <div className="pt-4 border-t border-gray-200 space-y-2">
+                {isAuthenticated ? (
+                  <>
+                    <div className="px-3 py-2">
+                      <div className="text-sm font-medium text-gray-900">
+                        {userProfile?.full_name || userProfile?.email}
+                      </div>
+                      <div className="text-xs text-gray-500 capitalize">
+                        {userProfile?.role}
+                      </div>
+                      {account && (
+                        <div className="text-xs text-gray-500 font-mono mt-1">
+                          {formatAddress(account)}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {account ? (
+                      <button
+                        onClick={() => {
+                          disconnectWallet();
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full btn-secondary text-sm mx-3"
+                      >
+                        Disconnect Wallet
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          connectWallet();
+                          setIsMenuOpen(false);
+                        }}
+                        disabled={isConnecting}
+                        className="w-full btn-primary flex items-center justify-center space-x-2 text-sm mx-3"
+                      >
+                        <Wallet className="w-4 h-4" />
+                        <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
+                      </button>
+                    )}
+                    
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full btn-secondary text-sm mx-3 flex items-center justify-center space-x-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <LogIn className="w-5 h-5" />
+                      <span>Sign In</span>
+                    </Link>
+                    <Link
+                      to="/signup"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50"
+                    >
+                      <UserCheck className="w-5 h-5" />
+                      <span>Sign Up</span>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}

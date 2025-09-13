@@ -6,7 +6,6 @@ import {
   ExternalLink, 
   TrendingUp, 
   DollarSign,
-  Calendar,
   CheckCircle,
   Clock
 } from 'lucide-react';
@@ -23,23 +22,78 @@ const Profile = () => {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        // Use demo account if no wallet connected
-        const demoAccount = account || '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
-        
-        // Call backend API instead of contract directly
-        const [createdResponse, sponsoredResponse] = await Promise.all([
-          fetch(`http://localhost:3001/api/projects?user=${demoAccount}`),
-          fetch(`http://localhost:3001/api/projects?sponsor=${demoAccount}`)
-        ]);
+        // Use mock data since backend is not available
+        const mockUserProjects = [
+          {
+            id: '1',
+            name: 'Blockchain E-Learning Platform',
+            description: 'A comprehensive e-learning platform built on blockchain technology with smart contracts for course certification and NFT-based achievements',
+            creator: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+            sponsor: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+            totalBudget: '15.5',
+            totalDeposited: '15.5',
+            totalReleased: '8.5',
+            currentMilestone: '4',
+            active: true,
+            milestones: [
+              { id: 1, description: 'Project Setup', amount: '2.0', dueDate: '2024-01-15' },
+              { id: 2, description: 'Smart Contract Development', amount: '5.0', dueDate: '2024-02-15' },
+              { id: 3, description: 'Frontend Development', amount: '4.0', dueDate: '2024-03-15' },
+              { id: 4, description: 'Testing & Deployment', amount: '3.0', dueDate: '2024-04-15' },
+              { id: 5, description: 'Documentation', amount: '1.5', dueDate: '2024-05-15' }
+            ],
+            createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: '2',
+            name: 'DeFi Yield Farming Dashboard',
+            description: 'A decentralized finance dashboard for yield farming optimization with real-time analytics and automated strategies',
+            creator: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+            sponsor: '0x90F79bf6EB2c4f870365E785982E1f101E93b906',
+            totalBudget: '25.0',
+            totalDeposited: '25.0',
+            totalReleased: '0.0',
+            currentMilestone: '0',
+            active: true,
+            milestones: [
+              { id: 1, description: 'Research & Planning', amount: '3.0', dueDate: '2024-01-20' },
+              { id: 2, description: 'Smart Contract Architecture', amount: '8.0', dueDate: '2024-02-20' },
+              { id: 3, description: 'Frontend Interface', amount: '7.0', dueDate: '2024-03-20' },
+              { id: 4, description: 'Analytics Engine', amount: '5.0', dueDate: '2024-04-20' },
+              { id: 5, description: 'Security Audit', amount: '2.0', dueDate: '2024-05-20' }
+            ],
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ];
 
-        const createdData = await createdResponse.json();
-        const sponsoredData = await sponsoredResponse.json();
+        const mockSponsoredProjects = [
+          {
+            id: '3',
+            name: 'NFT Marketplace for Artists',
+            description: 'A decentralized marketplace for digital artists to mint, sell, and trade their artwork as NFTs with royalty mechanisms',
+            creator: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+            sponsor: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+            totalBudget: '12.0',
+            totalDeposited: '12.0',
+            totalReleased: '6.0',
+            currentMilestone: '2',
+            active: true,
+            milestones: [
+              { id: 1, description: 'NFT Contract Development', amount: '4.0', dueDate: '2024-01-10' },
+              { id: 2, description: 'Marketplace Frontend', amount: '4.0', dueDate: '2024-02-10' },
+              { id: 3, description: 'Artist Dashboard', amount: '2.0', dueDate: '2024-03-10' },
+              { id: 4, description: 'Payment Integration', amount: '2.0', dueDate: '2024-04-10' }
+            ],
+            createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ];
 
-        setUserProjects(createdData.projects || []);
-        setSponsoredProjects(sponsoredData.projects || []);
+        setUserProjects(mockUserProjects);
+        setSponsoredProjects(mockSponsoredProjects);
       } catch (error) {
         console.error('Error loading user data:', error);
-        toast.error('Failed to load profile data');
+        setUserProjects([]);
+        setSponsoredProjects([]);
       } finally {
         setIsLoading(false);
       }

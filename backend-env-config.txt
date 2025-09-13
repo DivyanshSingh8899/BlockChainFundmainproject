@@ -1,0 +1,17 @@
+# Backend Environment Configuration
+
+# Server Configuration
+PORT=3001
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+
+# Blockchain Configuration
+NETWORK=hardhat
+CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+RPC_URL=http://localhost:8545
+
+# Supabase Database Configuration
+SUPABASE_URL=https://lckoekqbnihdrppeirrl.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb2tla3FibmloZHJwcGVpcnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2NzQ4MDAsImV4cCI6MjA1MjI1MDgwMH0.example-anon-key
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb2tla3FibmloZHJwcGVpcnJsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNjY3NDgwMCwiZXhwIjoyMDUyMjUwODAwfQ.example-service-role-key
+SUPABASE_DB_PASSWORD=your-actual-database-password-here
