@@ -7,17 +7,45 @@ import {
   TrendingUp, 
   DollarSign,
   CheckCircle,
-  Clock
+  Clock,
+  RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
-  const { account, balance, isConnected } = useWallet();
+  const { account, balance, isConnected, refreshBalance } = useWallet();
   
   const [userProjects, setUserProjects] = useState([]);
   const [sponsoredProjects, setSponsoredProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshingBalance, setIsRefreshingBalance] = useState(false);
+
+  // Manual balance refresh function
+  const handleRefreshBalance = async () => {
+    if (!isConnected) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+    
+    setIsRefreshingBalance(true);
+    try {
+      await refreshBalance();
+      toast.success('Balance refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing balance:', error);
+      toast.error('Failed to refresh balance');
+    } finally {
+      setIsRefreshingBalance(false);
+    }
+  };
+
+  // Auto-refresh balance when wallet connects
+  useEffect(() => {
+    if (isConnected && account) {
+      refreshBalance();
+    }
+  }, [isConnected, account, refreshBalance]);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -32,8 +60,8 @@ const Profile = () => {
             sponsor: '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
             totalBudget: '15.5',
             totalDeposited: '15.5',
-            totalReleased: '8.5',
-            currentMilestone: '4',
+            totalReleased: '15.5',
+            currentMilestone: '5',
             active: true,
             milestones: [
               { id: 1, description: 'Project Setup', amount: '2.0', dueDate: '2024-01-15' },
@@ -154,7 +182,7 @@ const Profile = () => {
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Progress:</span>
           <span className="font-medium">
-            {project.currentMilestone}/{project.milestones.length} milestones
+            {project.milestones.filter(m => m.paid).length}/{project.milestones.length} milestones
           </span>
         </div>
         {type === 'sponsored' && (
@@ -179,7 +207,7 @@ const Profile = () => {
         <div 
           className="bg-primary-600 h-2 rounded-full transition-all duration-300"
           style={{ 
-            width: `${(parseInt(project.currentMilestone) / project.milestones.length) * 100}%` 
+            width: `${(project.milestones.filter(m => m.paid).length / project.milestones.length) * 100}%` 
           }}
         />
       </div>
@@ -239,20 +267,35 @@ const Profile = () => {
             <div className="w-20 h-20 bg-gradient-to-r from-primary-600 to-primary-800 rounded-full flex items-center justify-center">
               <User className="w-10 h-10 text-white" />
             </div>
-            
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 {formatAddress(account)}
               </h2>
               <div className="flex items-center space-x-4 text-sm text-gray-600">
-                <span>Balance: {parseFloat(balance).toFixed(4)} ETH</span>
-                <button
-                  onClick={() => copyToClipboard(account)}
-                  className="flex items-center space-x-1 text-primary-600 hover:text-primary-700"
-                >
-                  <Copy className="w-4 h-4" />
-                  <span>Copy Address</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <span>
+                    Balance: {isConnected ? `${parseFloat(balance || '0').toFixed(4)} ETH` : 'Connect wallet to view balance'}
+                  </span>
+                  {isConnected && (
+                    <button
+                      onClick={handleRefreshBalance}
+                      disabled={isRefreshingBalance}
+                      className="flex items-center space-x-1 text-primary-600 hover:text-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Refresh balance"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isRefreshingBalance ? 'animate-spin' : ''}`} />
+                    </button>
+                  )}
+                </div>
+                {account && (
+                  <button
+                    onClick={() => copyToClipboard(account)}
+                    className="flex items-center space-x-1 text-primary-600 hover:text-primary-700"
+                  >
+                    <Copy className="w-4 h-4" />
+                    <span>Copy Address</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -346,51 +389,6 @@ const Profile = () => {
                   <p className="text-2xl font-bold text-gray-900">{sponsoredStats.totalReleased} ETH</p>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* My Projects */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">My Projects</h2>
-            <Link to="/projects/create" className="btn-primary">
-              Create New Project
-            </Link>
-          </div>
-          
-          {userProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} type="created" />
-              ))}
-            </div>
-          ) : (
-            <div className="card text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No Projects Created
-              </h3>
-              <p className="text-gray-600 mb-6">
-                You haven't created any projects yet. Start by creating your first project.
-              </p>
-              <Link to="/projects/create" className="btn-primary">
-                Create Your First Project
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Sponsored Projects */}
-        {sponsoredProjects.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Sponsored Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sponsoredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} type="sponsored" />
-              ))}
             </div>
           </div>
         )}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuthMock'
+import { useProjectContext } from '../contexts/ProjectContext'
 import { mockDbHelpers } from '../utils/mockData'
 import OverviewCard from '../components/OverviewCard'
 import ProjectCard from '../components/ProjectCard'
@@ -23,6 +24,7 @@ import toast from 'react-hot-toast'
 
 const SponsorDashboard = () => {
   const { userProfile } = useAuth()
+  const { projects: contextProjects } = useProjectContext()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     totalAllocated: 0,
@@ -41,19 +43,15 @@ const SponsorDashboard = () => {
 
   useEffect(() => {
     loadSponsorData()
-  }, [userProfile])
+  }, [userProfile, contextProjects])
 
   const loadSponsorData = async () => {
     try {
       setLoading(true)
       
-      // Load sponsored projects
-      const { data: projectsData, error: projectsError } = await mockDbHelpers.getProjects({
-        sponsor_id: userProfile?.id
-      })
-
-      if (projectsError) throw projectsError
-
+      // Use context projects instead of mock data
+      const projectsData = contextProjects || []
+      
       // Load transactions
       const { data: transactionsData, error: transactionsError } = await mockDbHelpers.getTransactions({
         user_id: userProfile?.id
@@ -61,11 +59,11 @@ const SponsorDashboard = () => {
 
       if (transactionsError) throw transactionsError
 
-      // Calculate stats
-      const totalAllocated = projectsData?.reduce((sum, project) => sum + parseFloat(project.total_budget), 0) || 0
-      const totalReleased = projectsData?.reduce((sum, project) => sum + parseFloat(project.total_released), 0) || 0
+      // Calculate stats using context project structure
+      const totalAllocated = projectsData?.reduce((sum, project) => sum + parseFloat(project.totalBudget), 0) || 0
+      const totalReleased = projectsData?.reduce((sum, project) => sum + parseFloat(project.totalReleased), 0) || 0
       const pendingFunds = totalAllocated - totalReleased
-      const activeProjects = projectsData?.filter(p => p.status === 'active').length || 0
+      const activeProjects = projectsData?.filter(p => p.active).length || 0
 
       setStats({
         totalAllocated: totalAllocated.toFixed(4),
@@ -79,7 +77,7 @@ const SponsorDashboard = () => {
 
       // Get pending milestones from all projects
       const allMilestones = projectsData?.flatMap(project => 
-        project.milestones?.filter(milestone => milestone.status === 'completed') || []
+        project.milestones?.filter(milestone => milestone.completed && !milestone.approved) || []
       ) || []
       setPendingMilestones(allMilestones)
 

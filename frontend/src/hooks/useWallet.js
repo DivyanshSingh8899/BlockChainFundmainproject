@@ -41,16 +41,24 @@ export const WalletProvider = ({ children }) => {
         const balance = await provider.getBalance(account.address);
         const network = await provider.getNetwork();
         
+        const formattedBalance = ethers.formatEther(balance);
+        
         setAccount(account.address);
-        setBalance(ethers.formatEther(balance));
+        setBalance(formattedBalance);
         setChainId(network.chainId.toString());
         setIsConnected(true);
         setProvider(provider);
         setSigner(await provider.getSigner());
         
+        console.log('Wallet connected:', {
+          address: account.address,
+          balance: formattedBalance,
+          chainId: network.chainId.toString()
+        });
+        
         return {
           address: account.address,
-          balance: ethers.formatEther(balance),
+          balance: formattedBalance,
           chainId: network.chainId.toString()
         };
       }
@@ -160,11 +168,13 @@ export const WalletProvider = ({ children }) => {
 
   // Refresh balance
   const refreshBalance = async () => {
-    if (!isConnected || !provider) return;
+    if (!isConnected || !provider || !account) return;
     
     try {
       const balance = await provider.getBalance(account);
-      setBalance(ethers.formatEther(balance));
+      const formattedBalance = ethers.formatEther(balance);
+      setBalance(formattedBalance);
+      console.log('Balance refreshed:', formattedBalance, 'ETH');
     } catch (error) {
       console.error('Error refreshing balance:', error);
     }
@@ -178,11 +188,13 @@ export const WalletProvider = ({ children }) => {
       if (accounts.length === 0) {
         disconnectWallet();
       } else if (accounts[0] !== account) {
+        console.log('Account changed, updating info...');
         getAccountInfo();
       }
     };
 
     const handleChainChanged = (chainId) => {
+      console.log('Chain changed, updating info...');
       setChainId(chainId);
       getAccountInfo();
     };
@@ -191,7 +203,8 @@ export const WalletProvider = ({ children }) => {
     window.ethereum.on('chainChanged', handleChainChanged);
 
     // Check if already connected
-    getAccountInfo().catch(() => {
+    getAccountInfo().catch((error) => {
+      console.log('No wallet connected initially:', error.message);
       // Not connected, that's fine
     });
 
@@ -203,11 +216,11 @@ export const WalletProvider = ({ children }) => {
     };
   }, [account]);
 
-  // Auto-refresh balance every 30 seconds
+  // Auto-refresh balance every 15 seconds for better UX
   useEffect(() => {
-    if (!isConnected) return;
+    if (!isConnected || !provider || !account) return;
 
-    const interval = setInterval(refreshBalance, 30000);
+    const interval = setInterval(refreshBalance, 15000);
     return () => clearInterval(interval);
   }, [isConnected, provider, account]);
 

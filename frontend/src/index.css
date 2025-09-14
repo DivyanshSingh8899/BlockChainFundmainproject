@@ -64,6 +64,27 @@
   .status-inactive {
     @apply bg-gray-100 text-gray-800;
   }
+  
+  /* Milestone Status Colors */
+  .milestone-completed {
+    @apply bg-success-100 text-success-800 border-success-200;
+  }
+  
+  .milestone-pending {
+    @apply bg-gray-100 text-gray-600 border-gray-200;
+  }
+  
+  .milestone-overdue {
+    @apply bg-danger-100 text-danger-800 border-danger-200;
+  }
+  
+  .milestone-awaiting-approval {
+    @apply bg-warning-100 text-warning-800 border-warning-200;
+  }
+  
+  .milestone-current {
+    @apply bg-primary-100 text-primary-800 border-primary-300 ring-2 ring-primary-200;
+  }
 }
 
 @layer utilities {

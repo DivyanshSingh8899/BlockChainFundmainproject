@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuthMock'
+import { useProjectContext } from '../contexts/ProjectContext'
 import { mockDbHelpers } from '../utils/mockData'
 import OverviewCard from '../components/OverviewCard'
 import ProjectCard from '../components/ProjectCard'
@@ -23,6 +24,7 @@ import toast from 'react-hot-toast'
 
 const ManagerDashboard = () => {
   const { userProfile } = useAuth()
+  const { projects: contextProjects } = useProjectContext()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     totalProjects: 0,
@@ -38,26 +40,22 @@ const ManagerDashboard = () => {
 
   useEffect(() => {
     loadManagerData()
-  }, [userProfile])
+  }, [userProfile, contextProjects])
 
   const loadManagerData = async () => {
     try {
       setLoading(true)
       
-      // Load manager's projects
-      const { data: projectsData, error: projectsError } = await mockDbHelpers.getProjects({
-        manager_id: userProfile?.id
-      })
+      // Use context projects instead of mock data
+      const projectsData = contextProjects || []
 
-      if (projectsError) throw projectsError
-
-      // Calculate stats
+      // Calculate stats using context project structure
       const totalProjects = projectsData?.length || 0
-      const activeProjects = projectsData?.filter(p => p.status === 'active').length || 0
+      const activeProjects = projectsData?.filter(p => p.active).length || 0
       const completedMilestones = projectsData?.reduce((sum, project) => 
-        sum + (project.milestones?.filter(m => m.status === 'completed' || m.status === 'approved').length || 0), 0
+        sum + (project.milestones?.filter(m => m.completed || m.approved).length || 0), 0
       ) || 0
-      const totalBudget = projectsData?.reduce((sum, project) => sum + parseFloat(project.total_budget), 0) || 0
+      const totalBudget = projectsData?.reduce((sum, project) => sum + parseFloat(project.totalBudget), 0) || 0
 
       setStats({
         totalProjects,

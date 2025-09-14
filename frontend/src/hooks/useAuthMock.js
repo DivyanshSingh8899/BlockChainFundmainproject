@@ -22,6 +22,9 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       setUser(JSON.parse(savedUser))
       setUserProfile(JSON.parse(savedUser))
+    } else {
+      setUser(null)
+      setUserProfile(null)
     }
     setLoading(false)
   }, [])

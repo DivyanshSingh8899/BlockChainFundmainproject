@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from './hooks/useAuthMock';
+import { AuthProvider, useAuth } from './hooks/useAuthMock';
 import { WalletProvider } from './hooks/useWallet';
 import { ContractProvider } from './hooks/useContract';
+import { ProjectProvider } from './contexts/ProjectContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -22,11 +23,14 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 
 function App() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <AuthProvider>
       <WalletProvider>
         <ContractProvider>
-          <Router>
+          <ProjectProvider>
+            <Router>
             <div className="min-h-screen bg-gray-50 flex flex-col">
               <AuthDebug />
               <Navbar />
@@ -39,9 +43,13 @@ function App() {
                   
                   {/* Protected Routes */}
                   <Route path="/" element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
+                    isAuthenticated ? (
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    ) : (
+                      <Login />
+                    )
                   } />
                   <Route path="/dashboard" element={
                     <ProtectedRoute>
@@ -100,7 +108,8 @@ function App() {
                 }}
               />
             </div>
-          </Router>
+            </Router>
+          </ProjectProvider>
         </ContractProvider>
       </WalletProvider>
     </AuthProvider>

@@ -29,7 +29,7 @@ const ProjectCard = ({
 
   const getProgressPercentage = () => {
     if (!project.milestones || project.milestones.length === 0) return 0
-    const completedMilestones = project.milestones.filter(m => m.status === 'completed' || m.status === 'approved').length
+    const completedMilestones = project.milestones.filter(m => m.completed || m.approved || m.status === 'completed' || m.status === 'approved').length
     return (completedMilestones / project.milestones.length) * 100
   }
 
@@ -48,13 +48,13 @@ const ProjectCard = ({
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-1">
-            {project.title}
+            {project.name || project.title}
           </h3>
           <p className="text-sm text-gray-600 line-clamp-2">
             {project.description}
           </p>
         </div>
-        {getStatusBadge(project.status)}
+        {getStatusBadge(project.status || (project.active ? 'active' : 'completed'))}
       </div>
 
       {/* Project Details */}
@@ -64,7 +64,7 @@ const ProjectCard = ({
             <DollarSign className="w-4 h-4 mr-1" />
             Budget:
           </span>
-          <span className="font-medium">{project.total_budget} ETH</span>
+          <span className="font-medium">{project.totalBudget || project.total_budget} ETH</span>
         </div>
         
         <div className="flex justify-between text-sm">
@@ -72,16 +72,16 @@ const ProjectCard = ({
             <DollarSign className="w-4 h-4 mr-1" />
             Released:
           </span>
-          <span className="font-medium">{project.total_released || 0} ETH</span>
+          <span className="font-medium">{project.totalReleased || project.total_released || 0} ETH</span>
         </div>
 
         <div className="flex justify-between text-sm">
           <span className="text-gray-500 flex items-center">
             <User className="w-4 h-4 mr-1" />
-            Manager:
+            Creator:
           </span>
           <span className="font-mono text-xs">
-            {formatAddress(project.manager?.wallet_address)}
+            {formatAddress(project.creator || project.manager?.wallet_address)}
           </span>
         </div>
 
@@ -92,7 +92,7 @@ const ProjectCard = ({
               Sponsor:
             </span>
             <span className="font-mono text-xs">
-              {formatAddress(project.sponsor?.wallet_address)}
+              {formatAddress(project.sponsor || project.sponsor?.wallet_address)}
             </span>
           </div>
         )}
@@ -102,7 +102,7 @@ const ProjectCard = ({
             <Calendar className="w-4 h-4 mr-1" />
             Created:
           </span>
-          <span className="text-gray-600">{formatDate(project.created_at)}</span>
+          <span className="text-gray-600">{formatDate(project.createdAt || project.created_at)}</span>
         </div>
       </div>
 
@@ -112,7 +112,7 @@ const ProjectCard = ({
           <div className="flex justify-between text-sm mb-2">
             <span className="text-gray-500">Progress</span>
             <span className="text-gray-600">
-              {project.milestones.filter(m => m.status === 'completed' || m.status === 'approved').length} / {project.milestones.length} milestones
+              {project.milestones.filter(m => m.completed || m.approved || m.status === 'completed' || m.status === 'approved').length} / {project.milestones.length} milestones
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuthMock'
+import { useProjectContext } from '../contexts/ProjectContext'
 import { mockDbHelpers } from '../utils/mockData'
 import OverviewCard from '../components/OverviewCard'
 import ProjectCard from '../components/ProjectCard'
@@ -23,6 +24,7 @@ import toast from 'react-hot-toast'
 
 const AuditorDashboard = () => {
   const { userProfile } = useAuth()
+  const { projects: contextProjects } = useProjectContext()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     totalProjects: 0,
@@ -40,27 +42,25 @@ const AuditorDashboard = () => {
 
   useEffect(() => {
     loadAuditorData()
-  }, [userProfile])
+  }, [userProfile, contextProjects])
 
   const loadAuditorData = async () => {
     try {
       setLoading(true)
       
-      // Load all projects (auditors can see everything)
-      const { data: projectsData, error: projectsError } = await mockDbHelpers.getProjects()
-
-      if (projectsError) throw projectsError
+      // Use context projects instead of mock data
+      const projectsData = contextProjects || []
 
       // Load all transactions
       const { data: transactionsData, error: transactionsError } = await mockDbHelpers.getTransactions()
 
       if (transactionsError) throw transactionsError
 
-      // Calculate stats
+      // Calculate stats using context project structure
       const totalProjects = projectsData?.length || 0
       const totalTransactions = transactionsData?.length || 0
       const totalVolume = transactionsData?.reduce((sum, tx) => sum + parseFloat(tx.amount), 0) || 0
-      const activeProjects = projectsData?.filter(p => p.status === 'active').length || 0
+      const activeProjects = projectsData?.filter(p => p.active).length || 0
 
       setStats({
         totalProjects,

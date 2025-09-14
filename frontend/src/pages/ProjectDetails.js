@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useWallet } from '../hooks/useWallet';
-import { useContract } from '../hooks/useContract';
+import { useProjectContext } from '../contexts/ProjectContext';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -20,7 +20,7 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { account, isConnected } = useWallet();
-  const { getProject, depositFunds, completeMilestone, approveMilestone, isLoading } = useContract();
+  const { getProject, updateProject, updateMilestone } = useProjectContext();
   
   const [project, setProject] = useState(null);
   const [isLoadingProject, setIsLoadingProject] = useState(true);
@@ -32,8 +32,28 @@ const ProjectDetails = () => {
   useEffect(() => {
     const loadProject = async () => {
       try {
-        const projectData = await getProject(id);
-        setProject(projectData);
+        // Try to fetch from backend API first
+        try {
+          const response = await fetch(`http://localhost:3001/api/projects/${id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setProject(data.project);
+            setIsLoadingProject(false);
+            return;
+          }
+        } catch (apiError) {
+          console.warn('Backend API not available, using context data:', apiError);
+        }
+
+        // Fallback to context data
+        const contextProject = getProject(id);
+        console.log('ProjectDetails: Context project found:', contextProject);
+        if (contextProject) {
+          setProject(contextProject);
+        } else {
+          console.error('ProjectDetails: Project not found with ID:', id);
+          throw new Error('Project not found');
+        }
       } catch (error) {
         console.error('Error loading project:', error);
         toast.error('Failed to load project');
@@ -43,12 +63,24 @@ const ProjectDetails = () => {
       }
     };
 
-    if (isConnected) {
+    if (id) {
       loadProject();
-    } else {
-      setIsLoadingProject(false);
     }
-  }, [id, isConnected, getProject, navigate]);
+  }, [id]);
+
+  // Update local project state when context data changes
+  useEffect(() => {
+    if (id) {
+      const contextProject = getProject(id);
+      if (contextProject && project) {
+        // Only update if there are actual differences to avoid unnecessary re-renders
+        const hasChanges = JSON.stringify(contextProject) !== JSON.stringify(project);
+        if (hasChanges) {
+          setProject(contextProject);
+        }
+      }
+    }
+  }, [id, project]);
 
   const handleDeposit = async () => {
     if (!depositAmount || parseFloat(depositAmount) <= 0) {
@@ -58,13 +90,25 @@ const ProjectDetails = () => {
 
     setIsDepositing(true);
     try {
-      await depositFunds(id, depositAmount);
+      // For demo purposes, just show success message
+      toast.success(`Demo: Deposited ${depositAmount} ETH to project ${id}`);
       setDepositAmount('');
-      // Reload project data
-      const updatedProject = await getProject(id);
-      setProject(updatedProject);
+      
+      const newTotalDeposited = (parseFloat(project.totalDeposited) + parseFloat(depositAmount)).toString();
+      
+      // Update both local state and context for synchronization
+      setProject(prev => ({
+        ...prev,
+        totalDeposited: newTotalDeposited
+      }));
+      
+      // Update context to ensure other components see the change
+      updateProject(id, {
+        totalDeposited: newTotalDeposited
+      });
     } catch (error) {
       console.error('Error depositing funds:', error);
+      toast.error('Failed to deposit funds');
     } finally {
       setIsDepositing(false);
     }
@@ -73,12 +117,27 @@ const ProjectDetails = () => {
   const handleCompleteMilestone = async (milestoneIndex) => {
     setIsCompleting(true);
     try {
-      await completeMilestone(id, milestoneIndex);
-      // Reload project data
-      const updatedProject = await getProject(id);
-      setProject(updatedProject);
+      // For demo purposes, just show success message
+      toast.success(`Demo: Marked milestone ${milestoneIndex + 1} as completed`);
+      
+      // Update both local state and context for synchronization
+      const milestoneUpdates = { completed: true };
+      
+      // Update context
+      updateMilestone(id, milestoneIndex, milestoneUpdates);
+      
+      // Update local state
+      setProject(prev => ({
+        ...prev,
+        milestones: prev.milestones.map((milestone, index) => 
+          index === milestoneIndex 
+            ? { ...milestone, ...milestoneUpdates }
+            : milestone
+        )
+      }));
     } catch (error) {
       console.error('Error completing milestone:', error);
+      toast.error('Failed to complete milestone');
     } finally {
       setIsCompleting(false);
     }
@@ -87,12 +146,35 @@ const ProjectDetails = () => {
   const handleApproveMilestone = async (milestoneIndex) => {
     setIsApproving(true);
     try {
-      await approveMilestone(id, milestoneIndex);
-      // Reload project data
-      const updatedProject = await getProject(id);
-      setProject(updatedProject);
+      // For demo purposes, just show success message
+      toast.success(`Demo: Approved milestone ${milestoneIndex + 1} and released funds`);
+      
+      // Update project state for demo
+      const milestone = project.milestones[milestoneIndex];
+      const newTotalReleased = (parseFloat(project.totalReleased) + parseFloat(milestone.amount)).toString();
+      const newCurrentMilestone = Math.min(parseInt(project.currentMilestone) + 1, project.milestones.length - 1).toString();
+      
+      // Update context first to ensure other components see the change
+      updateProject(id, {
+        totalReleased: newTotalReleased,
+        currentMilestone: newCurrentMilestone
+      });
+      updateMilestone(id, milestoneIndex, { approved: true, paid: true });
+      
+      // Update local state
+      setProject(prev => ({
+        ...prev,
+        totalReleased: newTotalReleased,
+        currentMilestone: newCurrentMilestone,
+        milestones: prev.milestones.map((milestone, index) => 
+          index === milestoneIndex 
+            ? { ...milestone, approved: true, paid: true }
+            : milestone
+        )
+      }));
     } catch (error) {
       console.error('Error approving milestone:', error);
+      toast.error('Failed to approve milestone');
     } finally {
       setIsApproving(false);
     }
@@ -103,56 +185,60 @@ const ProjectDetails = () => {
     toast.success('Copied to clipboard');
   };
 
-  const getMilestoneStatus = (milestone) => {
-    if (milestone.paid) return 'paid';
-    if (milestone.approved) return 'approved';
-    if (milestone.completed) return 'completed';
+  const getMilestoneStatus = (milestone, index) => {
+    if (milestone.paid) return 'completed';
+    if (milestone.approved) return 'awaiting-approval';
+    if (milestone.completed) return 'awaiting-approval';
     return 'pending';
   };
 
   const getMilestoneIcon = (status) => {
     switch (status) {
-      case 'paid':
-        return <CheckCircle className="w-5 h-5 text-success-600" />;
-      case 'approved':
-        return <CheckCircle className="w-5 h-5 text-primary-600" />;
       case 'completed':
+        return <CheckCircle className="w-5 h-5 text-success-600" />;
+      case 'awaiting-approval':
         return <Clock className="w-5 h-5 text-warning-600" />;
+      case 'pending':
+        return <XCircle className="w-5 h-5 text-gray-400" />;
       default:
         return <XCircle className="w-5 h-5 text-gray-400" />;
     }
   };
 
-  const getMilestoneBadge = (status) => {
+  const getMilestoneBadge = (status, isOverdue, isCurrent) => {
+    // Safeguard: completed milestones should never show as current
+    if (status === 'completed') return 'milestone-completed';
+    if (isCurrent && status !== 'completed') return 'milestone-current';
+    if (isOverdue && status === 'pending') return 'milestone-overdue';
     switch (status) {
-      case 'paid':
-        return 'status-completed';
-      case 'approved':
-        return 'status-active';
       case 'completed':
-        return 'status-pending';
+        return 'milestone-completed';
+      case 'awaiting-approval':
+        return 'milestone-awaiting-approval';
+      case 'pending':
+        return 'milestone-pending';
       default:
-        return 'status-inactive';
+        return 'milestone-pending';
     }
   };
 
   const canCompleteMilestone = (milestoneIndex) => {
+    // For demo purposes, allow any user to complete milestones
     return project && 
-           account === project.creator && 
            milestoneIndex === parseInt(project.currentMilestone) &&
            !project.milestones[milestoneIndex].completed;
   };
 
   const canApproveMilestone = (milestoneIndex) => {
+    // For demo purposes, allow any user to approve milestones
     return project && 
-           account === project.sponsor && 
            project.milestones[milestoneIndex].completed &&
            !project.milestones[milestoneIndex].approved;
   };
 
   const canDeposit = () => {
+    // For demo purposes, allow any user to deposit funds
     return project && 
-           account === project.sponsor && 
            parseFloat(project.totalDeposited) < parseFloat(project.totalBudget);
   };
 
@@ -185,22 +271,24 @@ const ProjectDetails = () => {
     );
   }
 
-  if (!isConnected) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Connect Your Wallet
-          </h2>
-          <p className="text-gray-600">
-            Please connect your MetaMask wallet to view project details.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Remove wallet connection requirement for demo purposes
+  // if (!isConnected) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h2 className="text-2xl font-bold text-gray-900 mb-4">
+  //           Connect Your Wallet
+  //         </h2>
+  //         <p className="text-gray-600">
+  //           Please connect your MetaMask wallet to view project details.
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  const progressPercentage = project.milestones?.length ? (parseInt(project.currentMilestone) / project.milestones.length) * 100 : 0;
+  const progressPercentage = project.milestones?.length ? 
+    (project.milestones.filter(m => m.paid).length / project.milestones.length) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -305,17 +393,30 @@ const ProjectDetails = () => {
               
               <div className="space-y-4">
                 {project.milestones.map((milestone, index) => {
-                  const status = getMilestoneStatus(milestone);
+                  const status = getMilestoneStatus(milestone, index);
                   const isOverdue = new Date(milestone.dueDate) < new Date() && status === 'pending';
+                  // Only show as current if it's the current milestone AND not completed/paid
+                  const isCurrent = index === parseInt(project.currentMilestone) && 
+                                   status !== 'completed' && 
+                                   !milestone.paid;
                   
                   return (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <div key={index} className={`border rounded-lg p-4 transition-all duration-200 ${
+                      isCurrent 
+                        ? 'border-primary-300 bg-primary-50 shadow-md' 
+                        : 'border-gray-200'
+                    }`}>
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center space-x-3">
                           {getMilestoneIcon(status)}
                           <div>
                             <h3 className="font-medium text-gray-900">
                               Milestone {index + 1}
+                              {isCurrent && (
+                                <span className="ml-2 text-xs bg-primary-600 text-white px-2 py-1 rounded-full">
+                                  Current
+                                </span>
+                              )}
                             </h3>
                             <p className="text-sm text-gray-600">
                               {milestone.description}
@@ -327,8 +428,8 @@ const ProjectDetails = () => {
                           <div className="font-semibold text-gray-900">
                             {milestone.amount} ETH
                           </div>
-                          <span className={`status-badge ${getMilestoneBadge(status)}`}>
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          <span className={`status-badge ${getMilestoneBadge(status, isOverdue, isCurrent)}`}>
+                            {status === 'awaiting-approval' ? 'Awaiting Approval' : status.charAt(0).toUpperCase() + status.slice(1)}
                           </span>
                         </div>
                       </div>
@@ -345,7 +446,7 @@ const ProjectDetails = () => {
                         {canCompleteMilestone(index) && (
                           <button
                             onClick={() => handleCompleteMilestone(index)}
-                            disabled={isCompleting || isLoading}
+                            disabled={isCompleting}
                             className="btn-warning text-sm"
                           >
                             {isCompleting ? 'Completing...' : 'Mark Complete'}
@@ -355,7 +456,7 @@ const ProjectDetails = () => {
                         {canApproveMilestone(index) && (
                           <button
                             onClick={() => handleApproveMilestone(index)}
-                            disabled={isApproving || isLoading}
+                            disabled={isApproving}
                             className="btn-success text-sm"
                           >
                             {isApproving ? 'Approving...' : 'Approve & Release'}
@@ -450,7 +551,7 @@ const ProjectDetails = () => {
                   
                   <button
                     onClick={handleDeposit}
-                    disabled={isDepositing || isLoading || !depositAmount}
+                    disabled={isDepositing || !depositAmount}
                     className="btn-primary w-full"
                   >
                     {isDepositing ? 'Depositing...' : 'Deposit Funds'}
