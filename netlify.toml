@@ -1,0 +1,22 @@
+[build]
+  base = "frontend/"
+  publish = "frontend/build"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  REACT_APP_SUPABASE_URL = "https://lckoekqbnihdrppeirrl.supabase.co"
+  REACT_APP_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjb2tla3FibmloZHJwcGVpcnJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY2NzQ4MDAsImV4cCI6MjA1MjI1MDgwMH0.example-anon-key"
+  REACT_APP_CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  REACT_APP_BACKEND_URL = "https://your-backend-url.herokuapp.com"
+  REACT_APP_NETWORK_NAME = "Sepolia Testnet"
+  REACT_APP_NETWORK_RPC_URL = "https://sepolia.infura.io/v3/YOUR_INFURA_KEY"
+  REACT_APP_NETWORK_CHAIN_ID = "11155111"
+  REACT_APP_NETWORK_CURRENCY_SYMBOL = "ETH"
