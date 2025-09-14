@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
@@ -26,7 +27,53 @@ export const WalletProvider = ({ children }) => {
 
   // Check if MetaMask is installed
   const isMetaMaskInstalled = () => {
-    return typeof window !== 'undefined' && window.ethereum;
+    return typeof window !== 'undefined' && window.ethereum && window.ethereum.isMetaMask;
+  };
+
+  // Check if MetaMask is locked
+  const isMetaMaskLocked = async () => {
+    if (!isMetaMaskInstalled()) return false;
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      return accounts.length === 0;
+    } catch (error) {
+      return true;
+    }
+  };
+
+  // Get MetaMask status for debugging
+  const getMetaMaskStatus = async () => {
+    const status = {
+      installed: isMetaMaskInstalled(),
+      locked: false,
+      accounts: [],
+      network: null,
+      error: null
+    };
+
+    if (!status.installed) {
+      status.error = 'MetaMask not installed';
+      return status;
+    }
+
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      status.accounts = accounts;
+      status.locked = accounts.length === 0;
+
+      if (accounts.length > 0) {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const network = await provider.getNetwork();
+        status.network = {
+          chainId: network.chainId.toString(),
+          name: network.name
+        };
+      }
+    } catch (error) {
+      status.error = error.message;
+    }
+
+    return status;
   };
 
   // Check if Hardhat network is running
@@ -259,8 +306,16 @@ export const WalletProvider = ({ children }) => {
 
   // Connect to MetaMask
   const connectWallet = async (retryCount = 0) => {
+    // Enhanced MetaMask detection
     if (!isMetaMaskInstalled()) {
-      toast.error('Please install MetaMask to continue');
+      toast.error('MetaMask is not installed. Please install MetaMask extension and refresh the page.');
+      return false;
+    }
+
+    // Check if MetaMask is locked
+    const isLocked = await isMetaMaskLocked();
+    if (isLocked) {
+      toast.error('MetaMask is locked. Please unlock your MetaMask wallet and try again.');
       return false;
     }
 
@@ -280,10 +335,22 @@ export const WalletProvider = ({ children }) => {
     await new Promise(resolve => setTimeout(resolve, delay));
     
     try {
-      // Request account access
-      console.log('Requesting account access...');
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      console.log('Account access granted, accounts:', accounts);
+      // First check if we already have accounts
+      console.log('Checking existing accounts...');
+      const existingAccounts = await window.ethereum.request({ method: 'eth_accounts' });
+      console.log('Existing accounts:', existingAccounts);
+      
+      let accounts;
+      if (existingAccounts.length > 0) {
+        // Use existing accounts
+        accounts = existingAccounts;
+        console.log('Using existing accounts:', accounts);
+      } else {
+        // Request account access
+        console.log('Requesting account access...');
+        accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        console.log('Account access granted, accounts:', accounts);
+      }
       
       if (!accounts || accounts.length === 0) {
         toast.error('No accounts found. Please unlock your MetaMask wallet.');
@@ -336,30 +403,52 @@ export const WalletProvider = ({ children }) => {
         stack: error.stack
       });
       
+      // Handle specific error codes
       if (error.code === 4001) {
-        toast.error('Please connect your MetaMask wallet');
+        toast.error('Connection rejected by user. Please try again and approve the connection in MetaMask.');
       } else if (error.code === -32002) {
-        toast.error('Connection request already pending');
-      } else if (error.code === -32603 && error.message && error.message.includes('circuit breaker')) {
-        if (retryCount < 2) {
-          toast.error(`MetaMask circuit breaker is open. Retrying in 3 seconds... (${retryCount + 1}/3)`);
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          return connectWallet(retryCount + 1);
+        toast.error('Connection request already pending. Please check your MetaMask popup.');
+      } else if (error.code === -32603) {
+        if (error.message && error.message.includes('circuit breaker')) {
+          if (retryCount < 2) {
+            toast.error(`MetaMask circuit breaker is open. Retrying in 3 seconds... (${retryCount + 1}/3)`);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            return connectWallet(retryCount + 1);
+          } else {
+            toast.error('MetaMask circuit breaker is open. Please refresh the page and try again.');
+          }
         } else {
-          toast.error('MetaMask circuit breaker is open. Click the "Reset" button next to Connect Wallet to fix this issue.');
+          toast.error('MetaMask internal error. Please refresh the page and try again.');
         }
+      } else if (error.code === -32601) {
+        toast.error('MetaMask method not found. Please update MetaMask to the latest version.');
+      } else if (error.code === -32700) {
+        toast.error('Invalid JSON request to MetaMask. Please refresh the page and try again.');
       } else if (error.message && error.message.includes('User rejected')) {
-        toast.error('Connection rejected by user');
+        toast.error('Connection rejected by user. Please try again and approve the connection.');
       } else if (error.message && error.message.includes('circuit breaker')) {
         if (retryCount < 2) {
           toast.error(`MetaMask is temporarily blocked. Retrying in 3 seconds... (${retryCount + 1}/3)`);
           await new Promise(resolve => setTimeout(resolve, 3000));
           return connectWallet(retryCount + 1);
         } else {
-          toast.error('MetaMask is temporarily blocked. Click the "Reset" button next to Connect Wallet to fix this issue.');
+          toast.error('MetaMask is temporarily blocked. Please refresh the page and try again.');
         }
+      } else if (error.message && error.message.includes('Already processing')) {
+        toast.error('MetaMask is already processing a request. Please wait and try again.');
+      } else if (error.message && error.message.includes('Non-Error promise rejection')) {
+        toast.error('MetaMask connection failed. Please refresh the page and try again.');
       } else {
-        toast.error(`Failed to connect wallet: ${error.message || 'Unknown error'}`);
+        // Generic error handling
+        const errorMessage = error.message || 'Unknown error';
+        toast.error(`Failed to connect wallet: ${errorMessage}`);
+        
+        // Provide additional guidance for common issues
+        if (errorMessage.includes('connect') || errorMessage.includes('MetaMask')) {
+          toast.error('Please ensure MetaMask is unlocked and try again.', {
+            duration: 5000
+          });
+        }
       }
       
       return false;
@@ -579,7 +668,8 @@ export const WalletProvider = ({ children }) => {
     resetMetaMaskConnection,
     forceResetMetaMask,
     addHardhatNetworkManually,
-    isMetaMaskInstalled
+    isMetaMaskInstalled,
+    getMetaMaskStatus
   };
 
   return (

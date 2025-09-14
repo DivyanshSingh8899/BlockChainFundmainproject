@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuthMock';
 import { useWallet } from '../hooks/useWallet';
 import ThemeToggle from './ThemeToggle';
 import WalletTroubleshoot from './WalletTroubleshoot';
+import MetaMaskTroubleshoot from './MetaMaskTroubleshoot';
 import { 
   Wallet, 
   Menu, 
@@ -144,8 +145,9 @@ const Navbar = () => {
 
                 {/* Troubleshooting Component - Show when authenticated but not connected */}
                 {!account && !manuallyDisconnected && (
-                  <div className="hidden lg:block">
+                  <div className="hidden lg:block space-y-2">
                     <WalletTroubleshoot />
+                    <MetaMaskTroubleshoot />
                   </div>
                 )}
 
@@ -271,8 +273,9 @@ const Navbar = () => {
 
                     {/* Mobile Troubleshooting Component */}
                     {!account && !manuallyDisconnected && (
-                      <div className="mx-3">
+                      <div className="mx-3 space-y-2">
                         <WalletTroubleshoot />
+                        <MetaMaskTroubleshoot />
                       </div>
                     )}
                     
