@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
-  const { account, balance, isConnected, refreshBalance } = useWallet();
+  const { account, balance, isConnected, refreshBalance, disconnectWallet, isDisconnecting, disconnectTimestamp } = useWallet();
   
   const [userProjects, setUserProjects] = useState([]);
   const [sponsoredProjects, setSponsoredProjects] = useState([]);
@@ -288,13 +288,31 @@ const Profile = () => {
                   )}
                 </div>
                 {account && (
-                  <button
-                    onClick={() => copyToClipboard(account)}
-                    className="flex items-center space-x-1 text-primary-600 hover:text-primary-700"
-                  >
-                    <Copy className="w-4 h-4" />
-                    <span>Copy Address</span>
-                  </button>
+                  <div key={`profile-wallet-${disconnectTimestamp || 'connected'}`} className="flex items-center space-x-4">
+                    <button
+                      onClick={() => copyToClipboard(account)}
+                      className="flex items-center space-x-1 text-primary-600 hover:text-primary-700"
+                    >
+                      <Copy className="w-4 h-4" />
+                      <span>Copy Address</span>
+                    </button>
+                    <button
+                      onClick={disconnectWallet}
+                      disabled={isDisconnecting}
+                      className="flex items-center space-x-1 text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isDisconnecting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                          <span>Disconnecting...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Disconnect Wallet</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

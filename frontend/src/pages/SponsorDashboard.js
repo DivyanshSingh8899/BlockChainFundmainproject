@@ -115,7 +115,9 @@ const SponsorDashboard = () => {
 
     // Project status distribution
     const statusCounts = projectsData.reduce((acc, project) => {
-      acc[project.status] = (acc[project.status] || 0) + 1
+      // Map active field to status string
+      const status = project.active ? 'active' : 'completed'
+      acc[status] = (acc[status] || 0) + 1
       return acc
     }, {})
 

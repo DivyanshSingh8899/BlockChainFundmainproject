@@ -11,7 +11,6 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
-import AuthDebug from './components/AuthDebug';
 
 // Pages
 import Login from './pages/Login';
@@ -34,7 +33,6 @@ function App() {
             <ProjectProvider>
               <Router>
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-300">
-              <AuthDebug />
               <Navbar />
               
               <main className="flex-1">

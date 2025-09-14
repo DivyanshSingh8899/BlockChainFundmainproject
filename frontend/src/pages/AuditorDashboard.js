@@ -106,7 +106,9 @@ const AuditorDashboard = () => {
 
     // Project status distribution
     const statusCounts = projectsData.reduce((acc, project) => {
-      acc[project.status] = (acc[project.status] || 0) + 1
+      // Map active field to status string
+      const status = project.active ? 'active' : 'completed'
+      acc[status] = (acc[status] || 0) + 1
       return acc
     }, {})
 
@@ -223,31 +225,31 @@ const AuditorDashboard = () => {
           <MilestoneTrendChart data={chartData.milestoneTrend} />
           
           {/* System Health */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">System Health</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">System Health</h3>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg transition-colors duration-300">
                 <div className="flex items-center">
-                  <Shield className="w-5 h-5 text-green-600 mr-3" />
-                  <span className="text-sm font-medium text-green-900">All Systems Operational</span>
+                  <Shield className="w-5 h-5 text-green-600 dark:text-green-400 mr-3" />
+                  <span className="text-sm font-medium text-green-900 dark:text-green-100">All Systems Operational</span>
                 </div>
-                <span className="text-sm text-green-600">✓</span>
+                <span className="text-sm text-green-600 dark:text-green-400">✓</span>
               </div>
               
-              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-colors duration-300">
                 <div className="flex items-center">
-                  <BarChart3 className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-sm font-medium text-blue-900">Database Connected</span>
+                  <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3" />
+                  <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Database Connected</span>
                 </div>
-                <span className="text-sm text-blue-600">✓</span>
+                <span className="text-sm text-blue-600 dark:text-blue-400">✓</span>
               </div>
               
-              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg transition-colors duration-300">
                 <div className="flex items-center">
-                  <AlertTriangle className="w-5 h-5 text-yellow-600 mr-3" />
-                  <span className="text-sm font-medium text-yellow-900">3 Pending Reviews</span>
+                  <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-3" />
+                  <span className="text-sm font-medium text-yellow-900 dark:text-yellow-100">3 Pending Reviews</span>
                 </div>
-                <span className="text-sm text-yellow-600">!</span>
+                <span className="text-sm text-yellow-600 dark:text-yellow-400">!</span>
               </div>
             </div>
           </div>

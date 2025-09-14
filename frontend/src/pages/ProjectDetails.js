@@ -252,12 +252,12 @@ const ProjectDetails = () => {
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Project Not Found
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             The project you're looking for doesn't exist or has been removed.
           </p>
           <button
@@ -291,13 +291,13 @@ const ProjectDetails = () => {
     (project.milestones.filter(m => m.paid).length / project.milestones.length) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate('/projects')}
-            className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
+            className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Projects</span>
@@ -305,10 +305,10 @@ const ProjectDetails = () => {
           
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 {project.name}
               </h1>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 {project.description}
               </p>
               <div className="flex items-center space-x-4">
@@ -317,17 +317,17 @@ const ProjectDetails = () => {
                 }`}>
                   {project.active ? 'Active' : 'Completed'}
                 </span>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
                   Created {new Date(project.createdAt).toLocaleDateString()}
                 </span>
               </div>
             </div>
             
             <div className="text-right">
-              <div className="text-2xl font-bold text-primary-600">
+              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                 {project.totalBudget} ETH
               </div>
-              <div className="text-sm text-gray-500">Total Budget</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Total Budget</div>
             </div>
           </div>
         </div>
@@ -337,48 +337,48 @@ const ProjectDetails = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Project Stats */}
             <div className="card">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
                 Project Statistics
               </h2>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {project.totalDeposited} ETH
                   </div>
-                  <div className="text-sm text-gray-500">Deposited</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Deposited</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {project.totalReleased} ETH
                   </div>
-                  <div className="text-sm text-gray-500">Released</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Released</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {project.milestones?.filter(m => m.completed && m.approved && m.paid).length || 0}
                   </div>
-                  <div className="text-sm text-gray-500">Completed Milestones</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Completed Milestones</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {project.milestones?.length || 0}
                   </div>
-                  <div className="text-sm text-gray-500">Total Milestones</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Total Milestones</div>
                 </div>
               </div>
               
               <div className="mt-6">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
                   <span>Progress</span>
                   <span>{progressPercentage.toFixed(1)}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                   <div 
-                    className="bg-primary-600 h-3 rounded-full transition-all duration-300"
+                    className="bg-primary-600 dark:bg-primary-500 h-3 rounded-full transition-all duration-300"
                     style={{ width: `${progressPercentage}%` }}
                   />
                 </div>
@@ -387,7 +387,7 @@ const ProjectDetails = () => {
 
             {/* Milestones */}
             <div className="card">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
                 Project Milestones
               </h2>
               
@@ -403,29 +403,29 @@ const ProjectDetails = () => {
                   return (
                     <div key={index} className={`border rounded-lg p-4 transition-all duration-200 ${
                       isCurrent 
-                        ? 'border-primary-300 bg-primary-50 shadow-md' 
-                        : 'border-gray-200'
+                        ? 'border-primary-300 dark:border-primary-600 bg-primary-50 dark:bg-primary-900/20 shadow-md' 
+                        : 'border-gray-200 dark:border-gray-700'
                     }`}>
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center space-x-3">
                           {getMilestoneIcon(status)}
                           <div>
-                            <h3 className="font-medium text-gray-900">
+                            <h3 className="font-medium text-gray-900 dark:text-gray-100">
                               Milestone {index + 1}
                               {isCurrent && (
-                                <span className="ml-2 text-xs bg-primary-600 text-white px-2 py-1 rounded-full">
+                                <span className="ml-2 text-xs bg-primary-600 dark:bg-primary-500 text-white px-2 py-1 rounded-full">
                                   Current
                                 </span>
                               )}
                             </h3>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               {milestone.description}
                             </p>
                           </div>
                         </div>
                         
                         <div className="text-right">
-                          <div className="font-semibold text-gray-900">
+                          <div className="font-semibold text-gray-900 dark:text-gray-100">
                             {milestone.amount} ETH
                           </div>
                           <span className={`status-badge ${getMilestoneBadge(status, isOverdue, isCurrent)}`}>
@@ -434,10 +434,10 @@ const ProjectDetails = () => {
                         </div>
                       </div>
                       
-                      <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
+                      <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
                         <span>Due: {new Date(milestone.dueDate).toLocaleDateString()}</span>
                         {isOverdue && (
-                          <span className="text-danger-600 font-medium">Overdue</span>
+                          <span className="text-danger-600 dark:text-danger-400 font-medium">Overdue</span>
                         )}
                       </div>
                       
@@ -474,20 +474,20 @@ const ProjectDetails = () => {
           <div className="space-y-6">
             {/* Project Info */}
             <div className="card">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Project Information
               </h3>
               
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Creator</label>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Creator</label>
                   <div className="flex items-center space-x-2 mt-1">
-                    <span className="font-mono text-sm">
+                    <span className="font-mono text-sm text-gray-900 dark:text-gray-100">
                       {project.creator.slice(0, 6)}...{project.creator.slice(-4)}
                     </span>
                     <button
                       onClick={() => copyToClipboard(project.creator)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
@@ -495,14 +495,14 @@ const ProjectDetails = () => {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Sponsor</label>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Sponsor</label>
                   <div className="flex items-center space-x-2 mt-1">
-                    <span className="font-mono text-sm">
+                    <span className="font-mono text-sm text-gray-900 dark:text-gray-100">
                       {project.sponsor.slice(0, 6)}...{project.sponsor.slice(-4)}
                     </span>
                     <button
                       onClick={() => copyToClipboard(project.sponsor)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
@@ -510,12 +510,12 @@ const ProjectDetails = () => {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Project ID</label>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Project ID</label>
                   <div className="flex items-center space-x-2 mt-1">
-                    <span className="font-mono text-sm">{project.id}</span>
+                    <span className="font-mono text-sm text-gray-900 dark:text-gray-100">{project.id}</span>
                     <button
                       onClick={() => copyToClipboard(project.id)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
@@ -527,7 +527,7 @@ const ProjectDetails = () => {
             {/* Deposit Funds */}
             {canDeposit() && (
               <div className="card">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Deposit Funds
                 </h3>
                 
@@ -545,7 +545,7 @@ const ProjectDetails = () => {
                     />
                   </div>
                   
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
                     Remaining budget: {(parseFloat(project.totalBudget) - parseFloat(project.totalDeposited)).toFixed(4)} ETH
                   </div>
                   
@@ -562,7 +562,7 @@ const ProjectDetails = () => {
 
             {/* Quick Actions */}
             <div className="card">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Quick Actions
               </h3>
               
