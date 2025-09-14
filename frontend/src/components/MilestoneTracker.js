@@ -76,8 +76,8 @@ const MilestoneTracker = ({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Milestones</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Milestones</h3>
         <div className="animate-pulse space-y-4">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="flex items-center space-x-4">
@@ -95,20 +95,20 @@ const MilestoneTracker = ({
 
   if (!milestones || milestones.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Milestones</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Milestones</h3>
         <div className="text-center py-8">
-          <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Milestones</h3>
-          <p className="text-gray-500">No milestones have been created for this project yet.</p>
+          <Calendar className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Milestones</h3>
+          <p className="text-gray-500 dark:text-gray-400">No milestones have been created for this project yet.</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Milestones</h3>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Milestones</h3>
       
       <div className="space-y-4">
         {milestones.map((milestone, index) => {
@@ -125,8 +125,8 @@ const MilestoneTracker = ({
           return (
             <div key={milestone.id} className={`border rounded-lg p-4 transition-all duration-200 ${
               isCurrent 
-                ? 'border-primary-300 bg-primary-50 shadow-md' 
-                : 'border-gray-200'
+                ? 'border-primary-300 dark:border-primary-600 bg-primary-50 dark:bg-primary-900/20 shadow-md' 
+                : 'border-gray-200 dark:border-gray-700'
             }`}>
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3 flex-1">
@@ -136,7 +136,7 @@ const MilestoneTracker = ({
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-2">
-                      <h4 className="text-sm font-medium text-gray-900">
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         Milestone {index + 1}: {milestone.title || milestone.description}
                         {isCurrent && (
                           <span className="ml-2 text-xs bg-primary-600 text-white px-2 py-1 rounded-full">
@@ -149,12 +149,12 @@ const MilestoneTracker = ({
                       </span>
                     </div>
                   
-                  <p className="text-sm text-gray-600 mb-3">{milestone.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{milestone.description}</p>
                   
-                  <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                  <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex items-center">
                       <DollarSign className="w-3 h-3 mr-1" />
-                      <span className="font-medium">{milestone.amount} ETH</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{milestone.amount} ETH</span>
                     </div>
                     
                     <div className="flex items-center">

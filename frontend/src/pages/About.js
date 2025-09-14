@@ -66,14 +66,14 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             About BlockFund
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             A revolutionary blockchain-based platform that ensures transparent, 
             milestone-driven project funding with complete accountability and 
             automated fund management through smart contracts.
@@ -83,31 +83,31 @@ const About = () => {
         {/* Problem & Solution */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <div className="card">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               The Problem
             </h2>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-danger-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Traditional project funding lacks transparency and accountability
                 </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-danger-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Funds are often misused or not properly tracked
                 </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-danger-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Sponsors have limited control over fund releases
                 </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-danger-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   No immutable audit trail for financial transactions
                 </p>
               </div>
@@ -115,31 +115,31 @@ const About = () => {
           </div>
 
           <div className="card">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
               Our Solution
             </h2>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-success-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Blockchain-based transparent funding with smart contracts
                 </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-success-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Milestone-based fund releases with sponsor approval
                 </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-success-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Complete audit trail for all transactions
                 </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-success-500 rounded-full mt-2"></div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Automated fund management and real-time monitoring
                 </p>
               </div>
@@ -149,7 +149,7 @@ const About = () => {
 
         {/* Features */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-12">
             Key Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -160,10 +160,10 @@ const About = () => {
                   <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Icon className="w-8 h-8 text-primary-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
                     {feature.description}
                   </p>
                 </div>
@@ -174,14 +174,14 @@ const About = () => {
 
         {/* Benefits */}
         <div className="card mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
             Benefits
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-start space-x-3">
                 <CheckCircle className="w-6 h-6 text-success-600 mt-0.5 flex-shrink-0" />
-                <p className="text-gray-700">{benefit}</p>
+                <p className="text-gray-700 dark:text-gray-300">{benefit}</p>
               </div>
             ))}
           </div>
@@ -189,16 +189,16 @@ const About = () => {
 
         {/* Technology Stack */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-12">
             Technology Stack
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {technologies.map((tech, index) => (
               <div key={index} className="card text-center">
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   {tech.name}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {tech.description}
                 </p>
               </div>
@@ -208,7 +208,7 @@ const About = () => {
 
         {/* How It Works */}
         <div className="card mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
             How It Works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -216,8 +216,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 1
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Create Project</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Create Project</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Project creators set up projects with defined milestones and funding requirements.
               </p>
             </div>
@@ -226,8 +226,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 2
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Sponsor Funds</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Sponsor Funds</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Sponsors deposit funds into the smart contract for the project.
               </p>
             </div>
@@ -236,8 +236,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 3
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Complete Milestones</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Complete Milestones</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Creators complete milestones and request approval from sponsors.
               </p>
             </div>
@@ -246,8 +246,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 4
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Release Funds</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Release Funds</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Sponsors approve milestones and funds are automatically released.
               </p>
             </div>
@@ -257,10 +257,10 @@ const About = () => {
         {/* Call to Action */}
         <div className="text-center">
           <div className="card max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Ready to Get Started?
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               Join the future of transparent project funding. Create your first project 
               or explore existing opportunities to sponsor.
             </p>
@@ -284,7 +284,7 @@ const About = () => {
         </div>
 
         {/* Footer Info */}
-        <div className="mt-16 text-center text-gray-500">
+        <div className="mt-16 text-center text-gray-500 dark:text-gray-400">
           <p className="mb-2">
             Built with ❤️ using modern blockchain technology
           </p>

@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './hooks/useAuthMock';
 import { WalletProvider } from './hooks/useWallet';
 import { ContractProvider } from './hooks/useContract';
 import { ProjectProvider } from './contexts/ProjectContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -26,12 +27,13 @@ function App() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <AuthProvider>
-      <WalletProvider>
-        <ContractProvider>
-          <ProjectProvider>
-            <Router>
-            <div className="min-h-screen bg-gray-50 flex flex-col">
+    <ThemeProvider>
+      <AuthProvider>
+        <WalletProvider>
+          <ContractProvider>
+            <ProjectProvider>
+              <Router>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-300">
               <AuthDebug />
               <Navbar />
               
@@ -108,11 +110,12 @@ function App() {
                 }}
               />
             </div>
-            </Router>
-          </ProjectProvider>
-        </ContractProvider>
-      </WalletProvider>
-    </AuthProvider>
+              </Router>
+            </ProjectProvider>
+          </ContractProvider>
+        </WalletProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

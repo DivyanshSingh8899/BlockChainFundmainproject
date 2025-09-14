@@ -72,7 +72,17 @@ const SponsorDashboard = () => {
         activeProjects
       })
 
-      setProjects(projectsData || [])
+      // Sort projects: Active projects first, then completed projects
+      const sortedProjects = (projectsData || []).sort((a, b) => {
+        // Active projects (active: true) come first
+        if (a.active && !b.active) return -1;
+        if (!a.active && b.active) return 1;
+        
+        // If both have same status, sort by creation date (newest first)
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+
+      setProjects(sortedProjects)
       setTransactions(transactionsData || [])
 
       // Get pending milestones from all projects
@@ -169,22 +179,22 @@ const SponsorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Sponsor Dashboard</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Sponsor Dashboard</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
             Manage your project investments and milestone approvals
           </p>
         </div>

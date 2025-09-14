@@ -30,7 +30,7 @@ export const ProjectProvider = ({ children }) => {
             totalDeposited: '15.5',
             totalReleased: '15.5',
             currentMilestone: '5',
-            active: true,
+            active: false,
             createdAt: '2024-08-14T10:00:00Z',
             milestones: [
               {

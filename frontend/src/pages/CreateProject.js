@@ -156,12 +156,12 @@ const CreateProject = () => {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Connect Your Wallet
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Please connect your MetaMask wallet to create a project.
           </p>
         </div>
@@ -170,13 +170,13 @@ const CreateProject = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Create New Project
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Set up a new blockchain-based project with milestone-based funding.
           </p>
         </div>
@@ -184,7 +184,7 @@ const CreateProject = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Project Information */}
           <div className="card">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
               Project Information
             </h2>
             
@@ -215,7 +215,7 @@ const CreateProject = () => {
                   placeholder="0x..."
                   maxLength={42}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   The address that will fund this project
                 </p>
               </div>
@@ -232,7 +232,7 @@ const CreateProject = () => {
                 placeholder="Describe your project goals, objectives, and deliverables..."
                 maxLength={1000}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {formData.description.length}/1000 characters
               </p>
             </div>
@@ -241,7 +241,7 @@ const CreateProject = () => {
           {/* Milestones */}
           <div className="card">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Project Milestones
               </h2>
               <button
@@ -256,9 +256,9 @@ const CreateProject = () => {
             
             <div className="space-y-6">
               {formData.milestones.map((milestone, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-medium text-gray-900">
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">
                       Milestone {index + 1}
                     </h3>
                     {formData.milestones.length > 1 && (
@@ -301,7 +301,7 @@ const CreateProject = () => {
                           className="input-field pr-8"
                           placeholder="0.0"
                         />
-                        <DollarSign className="absolute right-3 top-3 w-4 h-4 text-gray-400" />
+                        <DollarSign className="absolute right-3 top-3 w-4 h-4 text-gray-400 dark:text-gray-500" />
                       </div>
                     </div>
                     
@@ -317,7 +317,7 @@ const CreateProject = () => {
                           className="input-field pr-8"
                           min={new Date().toISOString().split('T')[0]}
                         />
-                        <Calendar className="absolute right-3 top-3 w-4 h-4 text-gray-400" />
+                        <Calendar className="absolute right-3 top-3 w-4 h-4 text-gray-400 dark:text-gray-500" />
                       </div>
                     </div>
                   </div>
@@ -325,10 +325,10 @@ const CreateProject = () => {
               ))}
             </div>
             
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-900">Total Budget:</span>
-                <span className="text-xl font-bold text-primary-600">
+                <span className="font-medium text-gray-900 dark:text-gray-100">Total Budget:</span>
+                <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
                   {calculateTotalBudget()} ETH
                 </span>
               </div>

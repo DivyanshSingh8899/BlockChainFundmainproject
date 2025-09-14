@@ -152,7 +152,7 @@ const ProjectDetails = () => {
       // Update project state for demo
       const milestone = project.milestones[milestoneIndex];
       const newTotalReleased = (parseFloat(project.totalReleased) + parseFloat(milestone.amount)).toString();
-      const newCurrentMilestone = Math.min(parseInt(project.currentMilestone) + 1, project.milestones.length - 1).toString();
+      const newCurrentMilestone = (parseInt(project.currentMilestone) + 1).toString();
       
       // Update context first to ensure other components see the change
       updateProject(id, {
@@ -358,9 +358,9 @@ const ProjectDetails = () => {
                 
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900">
-                    {project.currentMilestone}
+                    {project.milestones?.filter(m => m.completed && m.approved && m.paid).length || 0}
                   </div>
-                  <div className="text-sm text-gray-500">Current Milestone</div>
+                  <div className="text-sm text-gray-500">Completed Milestones</div>
                 </div>
                 
                 <div className="text-center">

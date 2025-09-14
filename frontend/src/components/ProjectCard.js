@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, Clock, CheckCircle, DollarSign, User, Calendar } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 
 const ProjectCard = ({ 
   project, 
@@ -10,12 +11,13 @@ const ProjectCard = ({
   onUpdateStatus,
   userRole = null 
 }) => {
+  const { isDark } = useTheme()
   const getStatusBadge = (status) => {
     const statusClasses = {
-      active: 'bg-green-100 text-green-800',
-      completed: 'bg-blue-100 text-blue-800',
-      cancelled: 'bg-red-100 text-red-800',
-      pending: 'bg-yellow-100 text-yellow-800'
+      active: 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400',
+      completed: 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400',
+      cancelled: 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400',
+      pending: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400'
     }
 
     return (
@@ -43,14 +45,26 @@ const ProjectCard = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+    <div 
+      className="rounded-lg shadow-sm border p-6 hover:shadow-md transition-all duration-200"
+      style={{
+        backgroundColor: isDark ? '#1f2937' : '#ffffff',
+        borderColor: isDark ? '#374151' : '#e5e7eb'
+      }}
+    >
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-1">
+          <h3 
+            className="text-lg font-semibold mb-1 line-clamp-1"
+            style={{ color: isDark ? '#f3f4f6' : '#111827' }}
+          >
             {project.name || project.title}
           </h3>
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p 
+            className="text-sm line-clamp-2"
+            style={{ color: isDark ? '#9ca3af' : '#4b5563' }}
+          >
             {project.description}
           </p>
         </div>
@@ -60,49 +74,78 @@ const ProjectCard = ({
       {/* Project Details */}
       <div className="space-y-3 mb-4">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500 flex items-center">
+          <span 
+            className="flex items-center"
+            style={{ color: isDark ? '#9ca3af' : '#6b7280' }}
+          >
             <DollarSign className="w-4 h-4 mr-1" />
             Budget:
           </span>
-          <span className="font-medium">{project.totalBudget || project.total_budget} ETH</span>
+          <span 
+            className="font-medium"
+            style={{ color: isDark ? '#f3f4f6' : '#111827' }}
+          >{project.totalBudget || project.total_budget} ETH</span>
         </div>
         
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500 flex items-center">
+          <span 
+            className="flex items-center"
+            style={{ color: isDark ? '#9ca3af' : '#6b7280' }}
+          >
             <DollarSign className="w-4 h-4 mr-1" />
             Released:
           </span>
-          <span className="font-medium">{project.totalReleased || project.total_released || 0} ETH</span>
+          <span 
+            className="font-medium"
+            style={{ color: isDark ? '#f3f4f6' : '#111827' }}
+          >{project.totalReleased || project.total_released || 0} ETH</span>
         </div>
 
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500 flex items-center">
+          <span 
+            className="flex items-center"
+            style={{ color: isDark ? '#9ca3af' : '#6b7280' }}
+          >
             <User className="w-4 h-4 mr-1" />
             Creator:
           </span>
-          <span className="font-mono text-xs">
+          <span 
+            className="font-mono text-xs"
+            style={{ color: isDark ? '#d1d5db' : '#374151' }}
+          >
             {formatAddress(project.creator || project.manager?.wallet_address)}
           </span>
         </div>
 
         {project.sponsor && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500 flex items-center">
+            <span 
+              className="flex items-center"
+              style={{ color: isDark ? '#9ca3af' : '#6b7280' }}
+            >
               <User className="w-4 h-4 mr-1" />
               Sponsor:
             </span>
-            <span className="font-mono text-xs">
+            <span 
+              className="font-mono text-xs"
+              style={{ color: isDark ? '#d1d5db' : '#374151' }}
+            >
               {formatAddress(project.sponsor || project.sponsor?.wallet_address)}
             </span>
           </div>
         )}
 
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500 flex items-center">
+          <span 
+            className="flex items-center"
+            style={{ color: isDark ? '#9ca3af' : '#6b7280' }}
+          >
             <Calendar className="w-4 h-4 mr-1" />
             Created:
           </span>
-          <span className="text-gray-600">{formatDate(project.createdAt || project.created_at)}</span>
+          <span style={{ color: isDark ? '#9ca3af' : '#4b5563' }}>
+            {formatDate(project.createdAt || project.created_at)}
+          </span>
         </div>
       </div>
 
@@ -110,8 +153,8 @@ const ProjectCard = ({
       {project.milestones && project.milestones.length > 0 && (
         <div className="mb-4">
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-500">Progress</span>
-            <span className="text-gray-600">
+            <span style={{ color: isDark ? '#9ca3af' : '#6b7280' }}>Progress</span>
+            <span style={{ color: isDark ? '#9ca3af' : '#4b5563' }}>
               {project.milestones.filter(m => m.completed || m.approved || m.status === 'completed' || m.status === 'approved').length} / {project.milestones.length} milestones
             </span>
           </div>

@@ -62,7 +62,7 @@ const Profile = () => {
             totalDeposited: '15.5',
             totalReleased: '15.5',
             currentMilestone: '5',
-            active: true,
+            active: false,
             milestones: [
               { id: 1, description: 'Project Setup', amount: '2.0', dueDate: '2024-01-15' },
               { id: 2, description: 'Smart Contract Development', amount: '5.0', dueDate: '2024-02-15' },
@@ -156,7 +156,7 @@ const Profile = () => {
   const ProjectCard = ({ project, type }) => (
     <div className="card hover:shadow-md transition-shadow duration-200">
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-semibold text-gray-900 truncate">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">
           {project.name}
         </h3>
         <span className={`status-badge ${
@@ -166,46 +166,46 @@ const Profile = () => {
         </span>
       </div>
       
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
         {project.description}
       </p>
       
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Budget:</span>
-          <span className="font-medium">{project.totalBudget} ETH</span>
+          <span className="text-gray-500 dark:text-gray-400">Budget:</span>
+          <span className="font-medium text-gray-900 dark:text-gray-100">{project.totalBudget} ETH</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Released:</span>
-          <span className="font-medium">{project.totalReleased} ETH</span>
+          <span className="text-gray-500 dark:text-gray-400">Released:</span>
+          <span className="font-medium text-gray-900 dark:text-gray-100">{project.totalReleased} ETH</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Progress:</span>
-          <span className="font-medium">
+          <span className="text-gray-500 dark:text-gray-400">Progress:</span>
+          <span className="font-medium text-gray-900 dark:text-gray-100">
             {project.milestones.filter(m => m.paid).length}/{project.milestones.length} milestones
           </span>
         </div>
         {type === 'sponsored' && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Creator:</span>
-            <span className="font-mono text-xs">
+            <span className="text-gray-500 dark:text-gray-400">Creator:</span>
+            <span className="font-mono text-xs text-gray-900 dark:text-gray-100">
               {formatAddress(project.creator)}
             </span>
           </div>
         )}
         {type === 'created' && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Sponsor:</span>
-            <span className="font-mono text-xs">
+            <span className="text-gray-500 dark:text-gray-400">Sponsor:</span>
+            <span className="font-mono text-xs text-gray-900 dark:text-gray-100">
               {formatAddress(project.sponsor)}
             </span>
           </div>
         )}
       </div>
       
-      <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+      <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mb-4">
         <div 
-          className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+          className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-300"
           style={{ 
             width: `${(project.milestones.filter(m => m.paid).length / project.milestones.length) * 100}%` 
           }}
@@ -224,12 +224,12 @@ const Profile = () => {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Connect Your Wallet
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Please connect your MetaMask wallet to view your profile.
           </p>
         </div>
@@ -249,14 +249,14 @@ const Profile = () => {
   const sponsoredStats = getProjectStats(sponsoredProjects);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             My Profile
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Manage your projects and track your funding activities.
           </p>
         </div>
@@ -268,10 +268,10 @@ const Profile = () => {
               <User className="w-10 h-10 text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 {formatAddress(account)}
               </h2>
-              <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center space-x-2">
                   <span>
                     Balance: {isConnected ? `${parseFloat(balance || '0').toFixed(4)} ETH` : 'Connect wallet to view balance'}
@@ -309,8 +309,8 @@ const Profile = () => {
                 <TrendingUp className="w-6 h-6 text-primary-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Projects Created</p>
-                <p className="text-2xl font-bold text-gray-900">{userProjects.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Projects Created</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{userProjects.length}</p>
               </div>
             </div>
           </div>
@@ -321,8 +321,8 @@ const Profile = () => {
                 <DollarSign className="w-6 h-6 text-success-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Budget</p>
-                <p className="text-2xl font-bold text-gray-900">{userStats.totalBudget} ETH</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Budget</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{userStats.totalBudget} ETH</p>
               </div>
             </div>
           </div>
@@ -333,8 +333,8 @@ const Profile = () => {
                 <Clock className="w-6 h-6 text-warning-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Active Projects</p>
-                <p className="text-2xl font-bold text-gray-900">{userStats.activeProjects}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Projects</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{userStats.activeProjects}</p>
               </div>
             </div>
           </div>
@@ -345,8 +345,8 @@ const Profile = () => {
                 <CheckCircle className="w-6 h-6 text-danger-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-gray-900">{userStats.completedProjects}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Completed</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{userStats.completedProjects}</p>
               </div>
             </div>
           </div>
@@ -361,8 +361,8 @@ const Profile = () => {
                   <User className="w-6 h-6 text-primary-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Projects Sponsored</p>
-                  <p className="text-2xl font-bold text-gray-900">{sponsoredProjects.length}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Projects Sponsored</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{sponsoredProjects.length}</p>
                 </div>
               </div>
             </div>
@@ -373,8 +373,8 @@ const Profile = () => {
                   <DollarSign className="w-6 h-6 text-success-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Sponsored</p>
-                  <p className="text-2xl font-bold text-gray-900">{sponsoredStats.totalBudget} ETH</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sponsored</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{sponsoredStats.totalBudget} ETH</p>
                 </div>
               </div>
             </div>
@@ -385,8 +385,8 @@ const Profile = () => {
                   <TrendingUp className="w-6 h-6 text-warning-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Funds Released</p>
-                  <p className="text-2xl font-bold text-gray-900">{sponsoredStats.totalReleased} ETH</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Funds Released</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{sponsoredStats.totalReleased} ETH</p>
                 </div>
               </div>
             </div>

@@ -125,24 +125,24 @@ const ManagerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Manager Dashboard</h1>
-              <p className="mt-2 text-gray-600">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Manager Dashboard</h1>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
                 Create and manage your blockchain projects
               </p>
             </div>
@@ -197,7 +197,7 @@ const ManagerDashboard = () => {
         {/* My Projects */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">My Projects</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Projects</h2>
             <div className="flex space-x-2">
               <button className="btn-secondary text-sm">
                 <Filter className="w-4 h-4 mr-2" />
@@ -223,9 +223,9 @@ const ManagerDashboard = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <FolderOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Projects Yet</h3>
-              <p className="text-gray-500 mb-6">Create your first blockchain project to get started.</p>
+              <FolderOpen className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Projects Yet</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Create your first blockchain project to get started.</p>
               <Link
                 to="/projects/create"
                 className="btn-primary inline-flex items-center space-x-2"
@@ -240,7 +240,7 @@ const ManagerDashboard = () => {
         {/* Recent Milestones */}
         {projects.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Milestones</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Recent Milestones</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {projects.slice(0, 2).map((project) => (
                 <MilestoneTracker
@@ -255,45 +255,45 @@ const ManagerDashboard = () => {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               to="/projects/create"
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="p-2 bg-primary-100 rounded-lg mr-4">
                 <Plus className="w-6 h-6 text-primary-600" />
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">Create Project</h4>
-                <p className="text-sm text-gray-500">Start a new blockchain project</p>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">Create Project</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Start a new blockchain project</p>
               </div>
             </Link>
             
             <Link
               to="/projects"
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="p-2 bg-blue-100 rounded-lg mr-4">
                 <FolderOpen className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">View All Projects</h4>
-                <p className="text-sm text-gray-500">Browse all available projects</p>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">View All Projects</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Browse all available projects</p>
               </div>
             </Link>
             
             <Link
               to="/profile"
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="p-2 bg-green-100 rounded-lg mr-4">
                 <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <h4 className="font-medium text-gray-900">Update Profile</h4>
-                <p className="text-sm text-gray-500">Manage your account settings</p>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">Update Profile</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Manage your account settings</p>
               </div>
             </Link>
           </div>

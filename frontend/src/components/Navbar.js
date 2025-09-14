@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuthMock';
 import { useWallet } from '../hooks/useWallet';
+import ThemeToggle from './ThemeToggle';
 import { 
   Wallet, 
   Menu, 
@@ -53,7 +54,7 @@ const Navbar = () => {
 
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
+    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo and brand */}
@@ -79,8 +80,8 @@ const Navbar = () => {
                     to={item.href}
                     className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                       isActive(item.href)
-                        ? 'text-primary-600 bg-primary-50'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20 dark:text-primary-400'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -92,18 +93,20 @@ const Navbar = () => {
 
           {/* Authentication and Wallet */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 {/* User Info */}
                 <div className="hidden sm:block text-right">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {userProfile?.full_name || userProfile?.email}
                   </div>
-                  <div className="text-xs text-gray-500 capitalize">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                     {userProfile?.role}
                   </div>
                   {account && (
-                    <div className="text-xs text-gray-500 font-mono">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 font-mono">
                       {formatAddress(account)}
                     </div>
                   )}
@@ -159,7 +162,7 @@ const Navbar = () => {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -173,7 +176,7 @@ const Navbar = () => {
         {/* Mobile navigation */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200 dark:border-gray-700">
               {navigation
                 .filter(item => !item.requireAuth || isAuthenticated)
                 .filter(item => !item.requireRole || userProfile?.role === item.requireRole)
@@ -186,8 +189,8 @@ const Navbar = () => {
                       onClick={() => setIsMenuOpen(false)}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                         isActive(item.href)
-                          ? 'text-primary-600 bg-primary-50'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20 dark:text-primary-400'
+                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -197,18 +200,18 @@ const Navbar = () => {
                 })}
               
               {/* Mobile auth and wallet buttons */}
-              <div className="pt-4 border-t border-gray-200 space-y-2">
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
                 {isAuthenticated ? (
                   <>
                     <div className="px-3 py-2">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {userProfile?.full_name || userProfile?.email}
                       </div>
-                      <div className="text-xs text-gray-500 capitalize">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                         {userProfile?.role}
                       </div>
                       {account && (
-                        <div className="text-xs text-gray-500 font-mono mt-1">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1">
                           {formatAddress(account)}
                         </div>
                       )}
@@ -254,7 +257,7 @@ const Navbar = () => {
                     <Link
                       to="/login"
                       onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
                       <LogIn className="w-5 h-5" />
                       <span>Sign In</span>
@@ -262,7 +265,7 @@ const Navbar = () => {
                     <Link
                       to="/signup"
                       onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50"
+                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20"
                     >
                       <UserCheck className="w-5 h-5" />
                       <span>Sign Up</span>

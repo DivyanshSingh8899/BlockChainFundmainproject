@@ -6,7 +6,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand section */}
@@ -15,9 +15,9 @@ const Footer = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">BF</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">BlockFund</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-gray-100">BlockFund</span>
             </div>
-            <p className="text-gray-600 mb-4 max-w-md">
+            <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md">
               A blockchain-based project funding and budget tracking system that ensures 
               transparency and milestone-based fund releases through smart contracts.
             </p>
@@ -26,7 +26,7 @@ const Footer = () => {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
               >
                 <Github className="w-5 h-5" />
               </a>
@@ -34,13 +34,13 @@ const Footer = () => {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a
                 href="mailto:contact@blockfund.com"
-                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
               >
                 <Mail className="w-5 h-5" />
               </a>
@@ -49,14 +49,14 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
               Quick Links
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   to="/"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
                 >
                   Dashboard
                 </Link>
@@ -64,7 +64,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/projects"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
                 >
                   Browse Projects
                 </Link>
@@ -72,7 +72,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/projects/create"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
                 >
                   Create Project
                 </Link>
@@ -80,7 +80,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
                 >
                   About
                 </Link>
@@ -90,7 +90,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
               Resources
             </h3>
             <ul className="space-y-2">
@@ -143,27 +143,27 @@ const Footer = () => {
         </div>
 
         {/* Bottom section */}
-        <div className="mt-8 pt-8 border-t border-gray-200">
+        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
               © {currentYear} BlockFund. All rights reserved.
             </div>
-            <div className="mt-4 md:mt-0 flex space-x-6 text-sm text-gray-600">
+            <div className="mt-4 md:mt-0 flex space-x-6 text-sm text-gray-600 dark:text-gray-400">
               <a
                 href="#"
-                className="hover:text-gray-900 transition-colors duration-200"
+                className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
               >
                 Privacy Policy
               </a>
               <a
                 href="#"
-                className="hover:text-gray-900 transition-colors duration-200"
+                className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
               >
                 Terms of Service
               </a>
               <a
                 href="#"
-                className="hover:text-gray-900 transition-colors duration-200"
+                className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"
               >
                 Cookie Policy
               </a>
